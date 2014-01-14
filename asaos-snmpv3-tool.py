@@ -23,7 +23,7 @@ __author__ = 'Avery Rozar'
 #              ::
 
 import pexpect
-import optparse
+import argparse
 
 PROMPT = ['# ', '>>> ', '>', '\$ ']
 SNMPGROUPCMD = ' snmp-server group '
@@ -64,43 +64,58 @@ def connect(user, host, passwd, en_passwd):
     child.expect(PROMPT)
     child.sendline('config t')
     child.expect(PROMPT)
-
     return child
 
 def main():
-    parser = optparse.OptionParser('usage %prog ' + '--host --username --password --enable --group --snmp_user --snmp_host --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
-    parser.add_option('--host', dest='host', type='string', help='specify a target host')
-    parser.add_option('--username', dest='user', type='string', help='specify a user name')
-    parser.add_option('--password', dest='passwd', type='string', help='specify a passwd')
-    parser.add_option('--enable', dest='en_passwd', type='string', help='specify an enable passwd')
-    parser.add_option('--group', dest='group', type='string', help='specify an snmp group')
-    parser.add_option('--snmp_user', dest='snmpuser', type='string', help='specify an snmp user')
-    parser.add_option('--snmp_host', dest='snmphost', type='string', help='specify an snmp server host')
-    parser.add_option('--int_name', dest='intname', type='string', help='specify interface name')
-    parser.add_option('--snmp_v3_auth', dest='snmpauth', type='string', help='specify the snmp user authentication')
-    parser.add_option('--snmp_v3_hmac', dest='snmphmac', type='string', help='set snmp HMAC, md5 or sha')
-    parser.add_option('--snmp_v3_priv', dest='snmppriv', type='string', help='specify the snmp priv password')
-    parser.add_option('--snmp_v3_encr', dest='snmpencrypt', type='string', help='specify encryption, des, 3des, or aes(128/192/256)')
+    parser = argparse.ArgumentParser('usage %prog ' + '--host --host_file --username --password--enable --group --snmp_user --snmp_host --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
+    parser.add_argument('--host', dest='host', type=str, help='specify a target host')
+    parser.add_argument('--host_file', dest='hostfile', type=str, help='specify a target host file')
+    parser.add_argument('--username', dest='user', type=str, help='specify a user name')
+    parser.add_argument('--password', dest='passwd', type=str, help='specify a passwd')
+    parser.add_argument('--enable', dest='en_passwd', type=str, help='specify an enable passwd')
+    parser.add_argument('--group', dest='group', type=str, help='specify an snmp group')
+    parser.add_argument('--snmp_user', dest='snmpuser', type=str, help='specify an snmp user')
+    parser.add_argument('--snmp_host', dest='snmphost', type=str, help='specify an snmp server host')
+    parser.add_argument('--int_name', dest='intname', type=str, help='specify interface name')
+    parser.add_argument('--snmp_v3_auth', dest='snmpauth', type=str, help='specify the snmp user authentication')
+    parser.add_argument('--snmp_v3_hmac', dest='snmphmac', type=str, help='set snmp HMAC, md5 or sha')
+    parser.add_argument('--snmp_v3_priv', dest='snmppriv', type=str, help='specify the snmp priv password')
+    parser.add_argument('--snmp_v3_encr', dest='snmpencrypt', type=str, help='specify encryption, des, 3des, or aes(128/192/256)')
 
-    (options, args) = parser.parse_args()
-    host = options.host
-    user = options.user
-    passwd = options.passwd
-    en_passwd = options.en_passwd
-    group = options.group
-    snmpuser = options.snmpuser
-    snmphost = options.snmphost
-    intname = options.intname
-    snmpauth = options.snmpauth
-    snmppriv = options.snmppriv
-    snmpencrypt = options.snmpencrypt
+    args = parser.parse_args()
+    host = args.host
+    hostfile = args.hostfile
+    user = args.user
+    passwd = args.passwd
+    en_passwd = args.en_passwd
+    group = args.group
+    snmpuser = args.snmpuser
+    snmphost = args.snmphost
+    intname = args.intname
+    snmpauth = args.snmpauth
+    snmppriv = args.snmppriv
+    snmpencrypt = args.snmpencrypt
 
-    child = connect(user, host, passwd, en_passwd)
-    send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
-    send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
-    send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
-    send_command(child, SNMPSRVENTRAP)
-    send_command(child, WRME)
+    if hostfile:
+        with open(hostfile) as hosts:
+            for line in hosts:
+                host = line.rstrip
+                child = connect(user, host, passwd, en_passwd)
+                send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
+                send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
+                send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
+                send_command(child, SNMPSRVENTRAP)
+                send_command(child, WRME)
+
+    elif host:
+        child = connect(user, host, passwd, en_passwd)
+        send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
+        send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
+        send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
+        send_command(child, SNMPSRVENTRAP)
+        send_command(child, WRME)
+    else:
+        print ('Specify either --host or --host_file or I have nothing to do')
 
 if __name__ == '__main__':
     main()
