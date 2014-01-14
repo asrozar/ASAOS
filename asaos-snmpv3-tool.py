@@ -93,7 +93,7 @@ def connects(user, hosts, passwd, en_passwd):
 def main():
     parser = argparse.ArgumentParser('usage %prog ' + '--host --host_file --username --password--enable --group --snmp_user --snmp_host --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
     parser.add_argument('--host', dest='host', type=str, help='specify a target host')
-    parser.add_argument('--host_file', dest='hosts', type=str, help='specify a target host file')
+    parser.add_argument('--host_file', dest='hosts', type=file, help='specify a target host file')
     parser.add_argument('--username', dest='user', type=str, help='specify a user name')
     parser.add_argument('--password', dest='passwd', type=str, help='specify a passwd')
     parser.add_argument('--enable', dest='en_passwd', type=str, help='specify an enable passwd')
