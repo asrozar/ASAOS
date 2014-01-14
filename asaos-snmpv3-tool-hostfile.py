@@ -69,7 +69,7 @@ def connect(user, host, passwd, en_passwd):
 def main():
     parser = argparse.ArgumentParser('usage %prog ' + '--host --host_file --username --password--enable --group --snmp_user --snmp_host --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
     parser.add_argument('--host', dest='host', type=str, help='specify a target host')
-    parser.add_argument('--host_file', dest='hfile', type=str, help='specify a target host file')
+    parser.add_argument('--host_file', dest='hostfile', type=str, help='specify a target host file')
     parser.add_argument('--username', dest='user', type=str, help='specify a user name')
     parser.add_argument('--password', dest='passwd', type=str, help='specify a passwd')
     parser.add_argument('--enable', dest='en_passwd', type=str, help='specify an enable passwd')
@@ -84,7 +84,7 @@ def main():
 
     args = parser.parse_args()
     host = args.host
-    hfile = args.hfile
+    hostfile = args.hostfile
     user = args.user
     passwd = args.passwd
     en_passwd = args.en_passwd
@@ -96,8 +96,8 @@ def main():
     snmppriv = args.snmppriv
     snmpencrypt = args.snmpencrypt
 
-    if hfile:
-        with open(hfile) as hosts:
+    if hostfile:
+        with open(hostfile) as hosts:
             for line in hosts:
                 host = line.rstrip
                 child = connect(user, host, passwd, en_passwd)
@@ -115,7 +115,7 @@ def main():
         send_command(child, SNMPSRVENTRAP)
         send_command(child, WRME)
     else:
-        print ('Specify euther --host or --host_file or I have nothing to do')
+        print ('Specify either --host or --host_file or I have nothing to do')
 
 if __name__ == '__main__':
     main()
