@@ -25,7 +25,7 @@ __author__ = 'Avery Rozar'
 import pexpect
 import argparse
 
-PROMPT = ['# ', '>>> ', '>', '\$ ']
+PROMPT = ['# ', '>']
 SNMPGROUPCMD = ' snmp-server group '
 V3PRIVCMD = ' v3 priv '
 SNMPSRVUSRCMD = ' snmp-server user '
