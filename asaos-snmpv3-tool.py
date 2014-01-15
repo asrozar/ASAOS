@@ -121,7 +121,7 @@ def main():
     snmpencrypt = args.snmpencrypt
 
     if hosts:
-        with open(hosts, mode='r', buffering=1):
+        with open(hosts, mode='r', buffering=2):
             for line in hosts:
                 hosts = line.rstrip
                 child = connects(user, hosts, passwd, en_passwd)
