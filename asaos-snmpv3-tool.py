@@ -66,30 +66,6 @@ def connect(user, host, passwd, en_passwd):
     child.expect(PROMPT)
     return child
 
-def connects(user, hosts, passwd, en_passwd):
-    ssh_newkey = 'Are you sure you want to continue connecting?'
-    constr = 'ssh ' + user + '@' + hosts
-    child = pexpect.spawn(constr)
-    ret = child.expect([pexpect.TIMEOUT, ssh_newkey, '[P|p]assword:'])
-
-    if ret == 0:
-        print '[-] Error Connecting'
-        return
-    if ret == 1:
-        child.sendline('yes')
-        ret = child.expect([pexpect.TIMEOUT, '[P|p]assword:'])
-        if ret == 0:
-            print '[-] Error Connecting'
-            return
-    child.sendline(passwd)
-    child.expect(PROMPT)
-    child.sendline('enable')
-    child.sendline(en_passwd)
-    child.expect(PROMPT)
-    child.sendline('config t')
-    child.expect(PROMPT)
-    return child
-
 def main():
     parser = argparse.ArgumentParser('usage %prog ' + '--host --host_file --username --password--enable --group --snmp_user --snmp_host --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
     parser.add_argument('--host', dest='host', type=str, help='specify a target host')
@@ -121,15 +97,15 @@ def main():
     snmpencrypt = args.snmpencrypt
 
     if hosts:
-        with open(hosts, mode='r', buffering=1):
-            for line in hosts:
-                hosts = line.rstrip
-                child = connects(user, hosts, passwd, en_passwd)
-                send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
-                send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
-                send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
-                send_command(child, SNMPSRVENTRAP)
-                send_command(child, WRME)
+#        with open(hosts, mode='r', buffering=1) as host_file:
+        for line in hosts:
+            host = line.rstrip()
+            child = connect(user, host, passwd, en_passwd)
+            send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
+            send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
+            send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
+            send_command(child, SNMPSRVENTRAP)
+            send_command(child, WRME)
 
     elif host:
         child = connect(user, host, passwd, en_passwd)
