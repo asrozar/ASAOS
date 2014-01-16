@@ -35,6 +35,7 @@ SNMPSRVHOSTCMD = ' snmp-server host '
 VERSION3CMD = ' version 3 '
 SHAHMACCMD = ' sha '
 SNMPSRVENTRAP = ' snmp-server enable traps all '
+SNMPSRVCONTACTCMD = ' snmp-server contact '
 WRME = ' write memory '
 
 def send_command(child, cmd):
@@ -76,6 +77,7 @@ def main():
     parser.add_argument('--group', dest='group', type=str, help='specify an snmp group')
     parser.add_argument('--snmp_user', dest='snmpuser', type=str, help='specify an snmp user')
     parser.add_argument('--snmp_host', dest='snmphost', type=str, help='specify an snmp server host')
+    parser.add_argument('--snmp_contact', dest='snmpcontact', type=str, help='specify your snmp contact info')
     parser.add_argument('--int_name', dest='intname', type=str, help='specify interface name')
     parser.add_argument('--snmp_v3_auth', dest='snmpauth', type=str, help='specify the snmp user authentication')
     parser.add_argument('--snmp_v3_hmac', dest='snmphmac', type=str, help='set snmp HMAC, md5 or sha')
@@ -91,6 +93,7 @@ def main():
     group = args.group
     snmpuser = args.snmpuser
     snmphost = args.snmphost
+    snmpcontact = args.snmpcontact
     intname = args.intname
     snmpauth = args.snmpauth
     snmppriv = args.snmppriv
@@ -103,6 +106,7 @@ def main():
             send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
             send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
             send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
+            send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
             send_command(child, SNMPSRVENTRAP)
             send_command(child, WRME)
 
@@ -111,6 +115,7 @@ def main():
         send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
         send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
         send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
+        send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
         send_command(child, SNMPSRVENTRAP)
         send_command(child, WRME)
     else:
