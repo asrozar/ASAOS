@@ -99,7 +99,6 @@ def main():
     snmppriv = args.snmppriv
     snmpencrypt = args.snmpencrypt
 
-
     if hosts:
         for line in hosts:
             host = line.rstrip()
