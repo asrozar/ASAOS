@@ -38,10 +38,12 @@ SNMPSRVENTRAP = ' snmp-server enable traps all '
 SNMPSRVCONTACTCMD = ' snmp-server contact '
 WRME = ' write memory '
 
+
 def send_command(child, cmd):
     child.sendline(cmd)
     child.expect(PROMPT)
     print child.before
+
 
 def connect(user, host, passwd, en_passwd):
     ssh_newkey = 'Are you sure you want to continue connecting?'
@@ -67,8 +69,10 @@ def connect(user, host, passwd, en_passwd):
     child.expect(PROMPT)
     return child
 
+
 def main():
-    parser = argparse.ArgumentParser('usage %prog ' + '--host --host_file --username --password--enable --group --snmp_user --snmp_host --snmp_contact --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
+    parser = argparse.ArgumentParser('usage %prog ' + '--host --host_file --username --password--enable --group\
+    --snmp_user --snmp_host --snmp_contact --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
     parser.add_argument('--host', dest='host', type=str, help='specify a target host')
     parser.add_argument('--host_file', dest='hosts', type=file, help='specify a target host file')
     parser.add_argument('--username', dest='user', type=str, help='specify a user name')
@@ -82,7 +86,8 @@ def main():
     parser.add_argument('--snmp_v3_auth', dest='snmpauth', type=str, help='specify the snmp user authentication')
     parser.add_argument('--snmp_v3_hmac', dest='snmphmac', type=str, help='set snmp HMAC, md5 or sha')
     parser.add_argument('--snmp_v3_priv', dest='snmppriv', type=str, help='specify the snmp priv password')
-    parser.add_argument('--snmp_v3_encr', dest='snmpencrypt', type=str, help='specify encryption, des, 3des, or aes(128/192/256)')
+    parser.add_argument('--snmp_v3_encr', dest='snmpencrypt', type=str, help='specify encryption, des, 3des, \
+    or aes(128/192/256)')
 
     args = parser.parse_args()
     host = args.host
@@ -104,7 +109,8 @@ def main():
             host = line.rstrip()
             child = connect(user, host, passwd, en_passwd)
             send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
-            send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
+            send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD +
+                                snmpencrypt + ' ' + snmppriv)
             send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
             send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
             send_command(child, SNMPSRVENTRAP)
@@ -113,13 +119,16 @@ def main():
     elif host:
         child = connect(user, host, passwd, en_passwd)
         send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
-        send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt + ' ' + snmppriv)
+        send_command(child,
+                     SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt
+                     + ' ' + snmppriv)
         send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
         send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
         send_command(child, SNMPSRVENTRAP)
         send_command(child, WRME)
     else:
         print ('Specify either --host or --host_file or I have nothing to do')
+
 
 if __name__ == '__main__':
     main()
