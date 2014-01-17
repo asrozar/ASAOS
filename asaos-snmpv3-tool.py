@@ -50,13 +50,13 @@ def connect(user, host, passwd, en_passwd):
     ret = child.expect([pexpect.TIMEOUT, ssh_newkey, '[P|p]assword:'])
 
     if ret == 0:
-        print '[-] Error Connecting'
+        print '[-] Error Connecting to ' + host
         return
     if ret == 1:
         child.sendline('yes')
         ret = child.expect([pexpect.TIMEOUT, '[P|p]assword:'])
         if ret == 0:
-            print '[-] Error Connecting'
+            print '[-] Error Connecting to ' + host
             return
     child.sendline(passwd)
     child.expect(PROMPT)
