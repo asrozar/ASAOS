@@ -111,37 +111,37 @@ def main():
         exit(0)
 
     if user is None:
-        user = raw_input('What is your username?: ')
+        user = raw_input('Enter your username: ')
 
     if passwd is None:
-        passwd = getpass.getpass(prompt='User Password:')
+        passwd = getpass.getpass(prompt='User Password: ')
 
     if en_passwd is None:
-        en_passwd = getpass.getpass(prompt='Enable Secret:')
+        en_passwd = getpass.getpass(prompt='Enable Secret: ')
 
     if group is None:
-        group = raw_input('What is your SNMP group?: ')
+        group = raw_input('Enter your SNMP group: ')
 
     if snmpuser is None:
-        snmpuser = raw_input('What is your SNMP user?: ')
+        snmpuser = raw_input('Enter your SNMP user: ')
 
     if snmphost is None:
-        snmphost = raw_input('What is your SNMP host address?: ')
+        snmphost = raw_input('Enter your SNMP server address: ')
 
     if snmpcontact is None:
-        snmpcontact = raw_input('Who is your SNMP contact?: ')
+        snmpcontact = raw_input('Who is your SNMP contact info: ')
 
     if intname is None:
-        intname = raw_input('What interface will the ASA use?: ')
+        intname = raw_input('Enter the interface the ASA will use to connect: ')
 
     if snmpauth is None:
-        snmpauth = raw_input('What is the SNMP usr auth?: ')
+        snmpauth = raw_input('Enter the SNMP user auth string: ')
 
     if snmppriv is None:
-        snmppriv = raw_input('What is the SNMP priv?: ')
+        snmppriv = raw_input('Enter the SNMP priv string: ')
 
     if snmpencrypt is None:
-        snmpencrypt = raw_input('What type of encryption will you use? des, 3des, or aes(128/192/256): ')
+        snmpencrypt = raw_input('Enter the type of encryption | des, 3des, or aes(128/192/256): ')
 
     if hosts:
         for line in hosts:
