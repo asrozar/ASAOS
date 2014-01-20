@@ -22,6 +22,8 @@ __author__ = 'Avery Rozar'
 #            ::::::
 #              ::
 
+import sys
+import getpass
 import pexpect
 import argparse
 
@@ -58,7 +60,7 @@ def connect(user, host, passwd, en_passwd):
         child.sendline('yes')
         ret = child.expect([pexpect.TIMEOUT, '[P|p]assword:'])
         if ret == 0:
-            print '[-] Error Connecting to ' + host
+            print '[-] Could not accept new key from ' + host
             return
     child.sendline(passwd)
     child.expect(PROMPT)
@@ -104,6 +106,49 @@ def main():
     snmppriv = args.snmppriv
     snmpencrypt = args.snmpencrypt
 
+    if host is None and hosts is None:
+        print('I need to know what host[s] to connect to')
+        print parser.usage
+        exit(0)
+
+    if user is None:
+        print('What is your username?')
+        raw_input(user)
+
+    if passwd is None:
+        passwd = getpass.getpass(prompt='User Password:')
+
+    if en_passwd is None:
+        en_passwd = getpass.getpass(prompt='Enable Secret:')
+
+    if group is None:
+        print('What is your SNMP group?')
+        raw_input(group)
+
+    if snmphost is None:
+        print('What is your SNMP host address?')
+        raw_input(snmphost)
+
+    if snmpcontact is None:
+        print('Who is your SNMP contact?')
+        raw_input(snmpcontact)
+
+    if intname is None:
+        print('What interface will the ASA use?')
+        raw_input(intname)
+
+    if snmpauth is None:
+        print('What is the SNMP usr auth?')
+        raw_input(snmpauth)
+
+    if snmppriv is None:
+        print('What is the SNMP priv?')
+        raw_input(snmppriv)
+
+    if snmpencrypt is None:
+        print('What type of encryption will you use? des, 3des, or aes(128/192/256)')
+        raw_input(snmpencrypt)
+
     if hosts:
         for line in hosts:
             host = line.rstrip()
@@ -119,9 +164,8 @@ def main():
     elif host:
         child = connect(user, host, passwd, en_passwd)
         send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
-        send_command(child,
-                     SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD + snmpencrypt
-                     + ' ' + snmppriv)
+        send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD +
+                            snmpencrypt + ' ' + snmppriv)
         send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
         send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
         send_command(child, SNMPSRVENTRAP)
