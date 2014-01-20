@@ -47,7 +47,7 @@ def send_command(child, cmd):
 
 
 def connect(user, host, passwd, en_passwd):
-    ssh_newkey = 'Are you sure you want to continue connecting?'
+    ssh_newkey = 'Are you sure you want to continue connecting (yes/no)?'
     constr = 'ssh ' + user + '@' + host
     child = pexpect.spawn(constr)
     ret = child.expect([pexpect.TIMEOUT, ssh_newkey, '[P|p]assword:'])
@@ -111,8 +111,7 @@ def main():
         exit(0)
 
     if user is None:
-        print('What is your username?')
-        raw_input(user)
+        user = raw_input(prompt='What is your username?')
 
     if passwd is None:
         passwd = getpass.getpass(prompt='User Password:')
@@ -121,32 +120,28 @@ def main():
         en_passwd = getpass.getpass(prompt='Enable Secret:')
 
     if group is None:
-        print('What is your SNMP group?')
-        raw_input(group)
+        group = raw_input(prompt='What is your SNMP group?')
+
+    if snmpuser is None:
+        snmpuser = raw_input(prompt='What is your SNMP user?')
 
     if snmphost is None:
-        print('What is your SNMP host address?')
-        raw_input(snmphost)
+        snmphost = raw_input(prompt='What is your SNMP host address?')
 
     if snmpcontact is None:
-        print('Who is your SNMP contact?')
-        raw_input(snmpcontact)
+        snmpcontact = raw_input(prompt='Who is your SNMP contact?')
 
     if intname is None:
-        print('What interface will the ASA use?')
-        raw_input(intname)
+        intname = raw_input(prompt='What interface will the ASA use?')
 
     if snmpauth is None:
-        print('What is the SNMP usr auth?')
-        raw_input(snmpauth)
+        snmpauth = raw_input(prompt='What is the SNMP usr auth?')
 
     if snmppriv is None:
-        print('What is the SNMP priv?')
-        raw_input(snmppriv)
+        snmppriv = raw_input(prompt='What is the SNMP priv?')
 
     if snmpencrypt is None:
-        print('What type of encryption will you use? des, 3des, or aes(128/192/256)')
-        raw_input(snmpencrypt)
+        snmpencrypt = raw_input(prompt='What type of encryption will you use? des, 3des, or aes(128/192/256)')
 
     if hosts:
         for line in hosts:
