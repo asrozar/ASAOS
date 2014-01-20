@@ -22,7 +22,6 @@ __author__ = 'Avery Rozar'
 #            ::::::
 #              ::
 
-import sys
 import getpass
 import pexpect
 import argparse
@@ -153,13 +152,15 @@ def main():
         for line in hosts:
             host = line.rstrip()
             child = connect(user, host, passwd, en_passwd)
-            send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
-            send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD +
+
+            if child:
+                send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
+                send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD +
                                 snmpencrypt + ' ' + snmppriv)
-            send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
-            send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
-            send_command(child, SNMPSRVENTRAP)
-            send_command(child, WRME)
+                send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
+                send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
+                send_command(child, SNMPSRVENTRAP)
+                send_command(child, WRME)
 
     elif host:
         child = connect(user, host, passwd, en_passwd)
@@ -170,9 +171,6 @@ def main():
         send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
         send_command(child, SNMPSRVENTRAP)
         send_command(child, WRME)
-    else:
-        print ('Specify either --host or --host_file or I have nothing to do')
-
 
 if __name__ == '__main__':
     main()
