@@ -11,7 +11,7 @@ To get help use the -h argument.
 
 python asaos-snmpv3-tool.py -h
 
-The minimum arguments are only -—host or --host_file, you will be prompted for the other augments.
+The minimum arguments are only --host or --host_file, you will be prompted for the other augments.
 
 python asaos-snmpv3-tool.py —-host_file
 
