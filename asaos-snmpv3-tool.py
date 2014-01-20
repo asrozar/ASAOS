@@ -155,8 +155,8 @@ def main():
 
             if child:
                 send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
-                send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD +
-                                snmpencrypt + ' ' + snmppriv)
+                send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth +
+                                    PRIVCMD + snmpencrypt + ' ' + snmppriv)
                 send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
                 send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
                 send_command(child, SNMPSRVENTRAP)
