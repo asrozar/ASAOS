@@ -13,7 +13,7 @@ python asaos-snmpv3-tool.py -h
 
 The minimum arguments are only --host or --host_file, you will be prompted for the other augments.
 
-python asaos-snmpv3-tool.py --host_file
+python asaos-snmpv3-tool.py --host_file=asa.hosts
 
 Use all arguments at once (Less secure, passwords will be loaded on the screen). You will need to use ‘quotes’ in arguments that include special characters and spaces.
 
