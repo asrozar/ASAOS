@@ -26,6 +26,7 @@ import pxssh
 import argparse
 from threading import *
 import time
+import getpass
 
 max_connections = 5
 connection_lock = BoundedSemaphore()
@@ -53,3 +54,27 @@ def connect(host, user, password, release):
     finally:
         if release:
             connection_lock.release()
+
+def main():
+    parser = argparse.ArgumentParser('--host --host_file --username --password')
+    parser.add_argument('--host', dest='host', type=str, help='specify a target host')
+    parser.add_argument('--host_file', dest='hosts', type=file, help='specify a target host file')
+    parser.add_argument('--username', dest='user', type=str, help='specify a user name')
+    parser.add_argument('--password', dest='passwd', type=str, help='specify a passwd')
+
+    args = parser.parse_args()
+    host = args.host
+    hosts = args.hosts
+    user = args.user
+    passwd = args.passwd
+
+    if host is None and hosts is None:
+        print('I need to know what host[s] to connect to')
+        print parser.usage
+        exit(0)
+
+    if user is None:
+        user = raw_input('Enter your username: ')
+
+    if passwd is None:
+        passwd = getpass.getpass(prompt='User Password: ')
