@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-__author__ = 'Avery Rozar'
 #             ...
 #        .:::|#:#|::::.
 #     .:::::|##|##|::::::.
@@ -21,55 +20,17 @@ __author__ = 'Avery Rozar'
 #           ::::::::
 #            ::::::
 #              ::
+__author__ = 'Avery Rozar'
 
 import getpass
-import pexpect
 import argparse
-
-PROMPT = ['# ', '>']
-SNMPGROUPCMD = ' snmp-server group '
-V3PRIVCMD = ' v3 priv '
-SNMPSRVUSRCMD = ' snmp-server user '
-V3AUTHCMD = ' v3 auth '
-PRIVCMD = ' priv '
-SNMPSRVHOSTCMD = ' snmp-server host '
-VERSION3CMD = ' version 3 '
-SHAHMACCMD = ' sha '
-SNMPSRVENTRAP = ' snmp-server enable traps all '
-SNMPSRVCONTACTCMD = ' snmp-server contact '
-WRME = ' write memory '
-
+from modules.cmds import *
+from modules.config_mode import *
 
 def send_command(child, cmd):
     child.sendline(cmd)
     child.expect(PROMPT)
     print child.before
-
-
-def connect(user, host, passwd, en_passwd):
-    ssh_newkey = 'Are you sure you want to continue connecting (yes/no)?'
-    constr = 'ssh ' + user + '@' + host
-    child = pexpect.spawn(constr)
-    ret = child.expect([pexpect.TIMEOUT, ssh_newkey, '[P|p]assword:'])
-
-    if ret == 0:
-        print '[-] Error Connecting to ' + host
-        return
-    if ret == 1:
-        child.sendline('yes')
-        ret = child.expect([pexpect.TIMEOUT, '[P|p]assword:'])
-        if ret == 0:
-            print '[-] Could not accept new key from ' + host
-            return
-    child.sendline(passwd)
-    child.expect(PROMPT)
-    child.sendline('enable')
-    child.sendline(en_passwd)
-    child.expect(PROMPT)
-    child.sendline('config t')
-    child.expect(PROMPT)
-    return child
-
 
 def main():
     parser = argparse.ArgumentParser('--host --host_file --username --password--enable --group --snmp_user --snmp_host\
@@ -146,7 +107,7 @@ def main():
     if hosts:
         for line in hosts:
             host = line.rstrip()
-            child = connect(user, host, passwd, en_passwd)
+            child = config_mode(user, host, passwd, en_passwd)
 
             if child:
                 send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
@@ -154,17 +115,17 @@ def main():
                                     PRIVCMD + snmpencrypt + ' ' + snmppriv)
                 send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
                 send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
-                send_command(child, SNMPSRVENTRAP)
+                send_command(child, SNMPSRVENTRAPCMD)
                 send_command(child, WRME)
 
     elif host:
-        child = connect(user, host, passwd, en_passwd)
+        child = config_mode(user, host, passwd, en_passwd)
         send_command(child, SNMPGROUPCMD + group + V3PRIVCMD)
         send_command(child, SNMPSRVUSRCMD + snmpuser + ' ' + group + V3AUTHCMD + SHAHMACCMD + snmpauth + PRIVCMD +
                             snmpencrypt + ' ' + snmppriv)
         send_command(child, SNMPSRVHOSTCMD + intname + ' ' + snmphost + VERSION3CMD + snmpuser)
         send_command(child, SNMPSRVCONTACTCMD + snmpcontact)
-        send_command(child, SNMPSRVENTRAP)
+        send_command(child, SNMPSRVENTRAPCMD)
         send_command(child, WRME)
 
 if __name__ == '__main__':
