@@ -29,7 +29,7 @@ def config_mode(user, host, passwd, en_passwd):
     ssh_newkey = 'Are you sure you want to continue connecting (yes/no)?'
     constr = 'ssh ' + user + '@' + host
     child = pexpect.spawn(constr)
-    ret = child.expect([pexpect.TIMEOUT, ssh_newkey, 'Permission denied, please try again.', '[P|p]assword:'])
+    ret = child.expect([pexpect.TIMEOUT, ssh_newkey, '[P|p]assword:'])
 
     if ret == 0:
         print '[-] Error Connecting to ' + host
@@ -41,10 +41,10 @@ def config_mode(user, host, passwd, en_passwd):
             print '[-] Could not accept new key from ' + host
             return
     child.sendline(passwd)
-    child.expect(PROMPT)
+    child.expect(USER_EXEC_MODE)
     child.sendline('enable')
     child.sendline(en_passwd)
-    child.expect(PROMPT)
+    child.expect(PRIV_EXEC_MODE)
     child.sendline('config t')
-    child.expect(PROMPT)
+    child.expect(PRIV_EXEC_MODE)
     return child

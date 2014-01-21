@@ -23,3 +23,5 @@
 __author__ = 'arozar'
 
 PROMPT = ['# ', '>']
+PRIV_EXEC_MODE = ['# ']
+USER_EXEC_MODE = ['>']
