@@ -29,7 +29,7 @@ import getpass
 import argparse
 
 def main():
-    parser = argparse.ArgumentParser('--host --host_file --username --password--enable --group --snmp_user --snmp_host\
+    parser = argparse.ArgumentParser('--host --host_file --username --password --enable --group --snmp_user --snmp_host\
     --snmp_contact --int_name --snmp_v3_auth --snmp_v3_hmac --snmp_v3_priv --snmp_v3_encr')
     parser.add_argument('--host', dest='host', type=str, help='specify a target host')
     parser.add_argument('--host_file', dest='hosts', type=file, help='specify a target host file')
