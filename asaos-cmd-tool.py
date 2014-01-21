@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-__author__ = 'Avery Rozar'
 #             ...
 #        .:::|#:#|::::.
 #     .:::::|##|##|::::::.
@@ -21,47 +20,11 @@ __author__ = 'Avery Rozar'
 #           ::::::::
 #            ::::::
 #              ::
+__author__ = 'Avery Rozar'
 
-import pexpect
-
-import pxssh
+from modules.enable_mode import *
+from modules.send_cmd import *
 import optparse
-import time
-from threading import *
-
-PROMPT = ['# ', '>>> ', '>', '\$ ']
-UNPROMPT = ['/.U./']
-PWPROMPT = ['/.P./']
-
-def send_command(child, cmd):
-    child.sendline(cmd)
-    child.expect(PROMPT)
-    print child.before
-
-def connect(user, host, passwd, en_passwd):
-    ssh_newkey = 'Are you sure you want to continue connecting?'
-    constr = 'ssh ' + user + '@' + host
-    child = pexpect.spawn(constr)
-    ret = child.expect([pexpect.TIMEOUT, ssh_newkey, '[P|p]assword:'])
-
-    if ret == 0:
-        print '[-] Error Connecting'
-        return
-    if ret == 1:
-        child.sendline('yes')
-        ret = child.expect([pexpect.TIMEOUT, '[P|p]assword:'])
-        if ret == 0:
-            print '[-] Error Connecting'
-            return
-    child.sendline(passwd)
-    child.expect(PROMPT)
-    child.sendline('enable')
-    child.sendline(en_passwd)
-    child.expect(PROMPT)
-    child.sendline('terminal pager 0')
-    child.expect(PROMPT)
-
-    return child
 
 def main():
     parser = optparse.OptionParser('usage %prog ' + '-H <host> -u <user> -p <passwd> -e <en_passwd> -c <command>')
@@ -82,7 +45,7 @@ def main():
         print parser.usage
         exit(0)
 
-    child = connect(user, host, passwd, en_passwd)
+    child = enable_mode(user, host, passwd, en_passwd)
     send_command(child, cmd)
 
 if __name__ == '__main__':

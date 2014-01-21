@@ -22,15 +22,11 @@
 #              ::
 __author__ = 'Avery Rozar'
 
-import getpass
-import argparse
 from modules.cmds import *
 from modules.config_mode import *
-
-def send_command(child, cmd):
-    child.sendline(cmd)
-    child.expect(PROMPT)
-    print child.before
+from modules.send_cmd import *
+import getpass
+import argparse
 
 def main():
     parser = argparse.ArgumentParser('--host --host_file --username --password--enable --group --snmp_user --snmp_host\
