@@ -61,12 +61,14 @@ def main():
     parser.add_argument('--host_file', dest='hosts', type=file, help='specify a target host file')
     parser.add_argument('--username', dest='user', type=str, help='specify a user name')
     parser.add_argument('--password', dest='passwd', type=str, help='specify a passwd')
+    parser.add_argument('--enable', dest='en_passwd', type=str, help='specify an enable password')
 
     args = parser.parse_args()
     host = args.host
     hosts = args.hosts
     user = args.user
     passwd = args.passwd
+    en_passwd= args.en_passwd
 
     if host is None and hosts is None:
         print('I need to know what host[s] to connect to')
@@ -78,3 +80,6 @@ def main():
 
     if passwd is None:
         passwd = getpass.getpass(prompt='User Password: ')
+
+    if en_passwd is None:
+        en_passwd = getpass.getpass(prompt='Enable Password: ')
