@@ -53,10 +53,10 @@ def config_mode(user, host, passwd, en_passwd):
             print 'enable password for ' + host + ' is incorrect'
             return
         if enable == 1:
+            child.sendline('config t')
+            child.expect(PRIV_EXEC_MODE)
             return child
     if auth == 2:
+        child.sendline('config t')
+        child.expect(PRIV_EXEC_MODE)
         return child
-    child.expect(PRIV_EXEC_MODE)
-    child.sendline('config t')
-    child.expect(PRIV_EXEC_MODE)
-    return child
