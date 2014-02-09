@@ -1,4 +1,4 @@
-Cisco_Tool
+ASAOS_SNMPv3 tool.
 =====
 
 This tool bulk edits ASAOS devices for SNMP v3, priv mode only.
