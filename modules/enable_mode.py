@@ -41,9 +41,21 @@ def enable_mode(user, host, passwd, en_passwd):
             print '[-] Could not accept new key from ' + host
             return
     child.sendline(passwd)
-    child.expect(USER_EXEC_MODE)
-    child.sendline('enable')
-    child.sendline(en_passwd)
+    auth = child.expect(['[P|p]assword:', '.>', '.#'])
+    if auth == 0:
+        print 'User password is incorrect'
+        return
+    if auth == 1:
+        child.sendline('enable')
+        child.sendline(en_passwd)
+        enable = child.expect([pexpect.TIMEOUT, '.#'])
+        if enable == 0:
+            print 'enable password for ' + host + ' is incorrect'
+            return
+        if enable == 1:
+            return child
+    if auth == 2:
+        return child
     child.expect(PRIV_EXEC_MODE)
     child.sendline('terminal pager 0')
     child.expect(PRIV_EXEC_MODE)
