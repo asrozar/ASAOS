@@ -1,5 +1,7 @@
 RETIRED
 
+[USE CISCO_SNMPv3_tool instead](https://github.com/asrozar/Cisco_SNMPv3_tool)
+
 ASAOS_SNMPv3 tool.
 =====
 
