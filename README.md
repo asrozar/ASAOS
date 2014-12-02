@@ -1,3 +1,5 @@
+RETIRED
+
 ASAOS_SNMPv3 tool.
 =====
 
